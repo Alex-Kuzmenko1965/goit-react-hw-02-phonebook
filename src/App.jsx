@@ -1,63 +1,93 @@
 // import './App.css';
 import React, { Component } from 'react';
-import { Section } from './components/Section/Section';
-import { FeedbackOptions } from './components/FeedbackOptions/FeedbackOptions';
-import { Statistics } from './components/Statistics/Statistics';
-// import user from './components/Data/user.json';
+import { nanoid } from "nanoid";
+import { ContactForm } from './components/ContactForm/ContactForm';
+import { ContactList } from './components/ContactList/ContactList';
+import { Filter } from './components/Filter/Filter';
 
 export default class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0
+    contacts: [
+      {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+      {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+      {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+      {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
+    ],
+    filter: '',
+    name: '',
+    number: ''
   }
   
-  onLeaveFeedback = (event) => {    
-    // console.log(event.target.name);
-    const options = event.target.name;
-    console.log(options);
-    if (options === "good") {
-      this.setState((prevState) => ({
-      good: (prevState.good += 1),        
-    }));} 
-    if (options === "bad") {
-      this.setState((prevState) => ({
-      bad: (prevState.bad += 1),        
-    }));}
-    if (options === "neutral") {
-      this.setState((prevState) => ({
-      neutral: (prevState.neutral += 1),        
-    }));
-    }
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+    console.log(name, value);
   };
 
-  // countTotalFeedback() {
-  //   const total = this.state.good + this.state.bad + this.state.neutral;
-  //   console.log(total);
-  //   return total;
-  // };
+  handleSubmit = event => {    
+    event.preventDefault();
+    const contactId = nanoid();
+    const { name, number } = this.state;    
+    const contacts = this.state.contacts;    
+    const isName = contacts.find(contact => contact.name === this.state.name);
+    // console.log(isName);
+    if (!isName) {
+      const contact = { id: contactId, name: name, number: number};
+      // console.log(contact);
+      this.setState((prevState) => ({contacts: [...prevState.contacts, contact] }));      
+      this.reset();
+    } else alert(`${name} is already in contact`);   
+  };
 
-  // countPositiveFeedbackPercentage() {
-  //   const positivePercentage = (this.state.good / this.total).toFixed(2);
-  //   console.log(positivePercentage);
-  //   return positivePercentage;
-  // };
+  reset = () => {
+    this.setState({
+      name: '',
+      number: ''
+    });
+  };
+  
+  deleteContact = contactId => {
+    // console.log(contactId);
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
+
+  getContactsBySearchQuery = ({ target }) => {
+    const searchQuery = target.value;
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+
+    const filteredContacts = this.state.contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(normalizedSearchQuery)
+    );
+    console.log(filteredContacts);
+  }
 
   render() {
-    const { good, neutral, bad } = this.state;    
-    const total = good + neutral + bad;
-    console.log(total);
-    const positivePercentage = (good / total).toFixed(2);
-    console.log(positivePercentage);    
 
   return (
-    <>    
-    <Section title={"Please leave feedback"}>   
-      <FeedbackOptions  onLeaveFeedback = {this.onLeaveFeedback} />
-    </Section>
-    <Section title={"Statistics"}>
-      <Statistics  good={good} neutral={neutral} bad={bad} total={total} positivePercentage={positivePercentage} />
-    </Section>
-    </>      
+    <div>
+      <h1>Phonebook</h1>      
+      <ContactForm 
+      name = {this.state.name}
+      number = {this.state.number}
+      handleChange = {this.handleChange}
+      handleSubmit = {this.handleSubmit} />
+      <h2>Contacts</h2>
+      <Filter 
+      searchQuery = {this.searchQuery}
+      getContactsBySearchQuery = {this.getContactsBySearchQuery} />      
+      {/* {this.getContactsBySearchQuery().length ? (
+        <ContactList 
+          contacts = {this.filteredContacts}
+          deleteContact = {this.deleteContact} />
+          ) : (<><p>No matches found</p>
+          <ContactList 
+          contacts = {this.state.contacts}
+          deleteContact = {this.deleteContact} /></>)} */}
+      <ContactList 
+      contacts = {this.state.contacts}
+      deleteContact = {this.deleteContact} />
+    </div>      
   );}
 }
