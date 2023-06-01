@@ -51,15 +51,26 @@ export default class App extends Component {
     }));
   };
 
-  getContactsBySearchQuery = ({ target }) => {
+  
+  searchQuery = ({ target }) => {
     const searchQuery = target.value;    
-    const normalizedSearchQuery = searchQuery.toLowerCase();
     this.setState({filter: searchQuery});
-    const filteredContacts = this.state.contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(normalizedSearchQuery));
-    this.setState({...this.state.filter, filteredContacts})
-    console.log(filteredContacts);
-    return filteredContacts;
+    console.log(this.state.filter)
+  }
+
+  getFilteredContacts = () => {    
+    if (!this.state.filter) {
+      const filteredContacts = this.state.contacts;
+      console.log(filteredContacts);
+      return filteredContacts;
+    } else {
+      const filter = this.state.filter;    
+      const normalizedFilter = filter.toLowerCase();
+      const filteredContacts = this.state.contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(normalizedFilter));    
+      console.log(filteredContacts);
+      return filteredContacts;
+    }
   }
 
   render() {
@@ -73,16 +84,10 @@ export default class App extends Component {
       <h2>Contacts</h2>
       <Filter
       filter = {this.state.filter}
-      filteredContacts = {this.filteredContacts}   
-      getContactsBySearchQuery = {this.getContactsBySearchQuery}
-      deleteContact = {this.deleteContact} />      
-      {(this.state.filter === '') ? (<><p>No matches found</p>
-      <ContactList 
-      contacts = {this.state.contacts}
-      deleteContact = {this.deleteContact} /></>) : (<ContactList 
-      contacts = {this.state.filteredContacts}
-      deleteContact = {this.deleteContact} />)      
-      }      
+      searchQuery = {this.searchQuery} />
+      <ContactList
+      getFilteredContacts = {this.getFilteredContacts}
+      deleteContact = {this.deleteContact} />
     </div>
   );}
 }

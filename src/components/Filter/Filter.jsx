@@ -1,6 +1,6 @@
 // import cl from './Section.module.css';
 
-export const Filter = ({ filter, filteredContacts, getContactsBySearchQuery}) => {
+export const Filter = ({ filter, searchQuery}) => {
   return (
     <label>
       Find contacts by name   
@@ -8,8 +8,9 @@ export const Filter = ({ filter, filteredContacts, getContactsBySearchQuery}) =>
       type="text"
       name="search"          
       value={filter}
-      onChange={getContactsBySearchQuery}          
+      onChange={searchQuery}          
       />
+      {(!filter) ? (<p>No matches found</p>) : (<></>)}
     </label>
   );
 };
