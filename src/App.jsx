@@ -84,7 +84,8 @@ export default class App extends Component {
       <h2>Contacts</h2>
       <Filter
       filter = {this.state.filter}
-      searchQuery = {this.searchQuery} />
+      searchQuery = {this.searchQuery}
+      getFilteredContacts = {this.getFilteredContacts} />
       <ContactList
       getFilteredContacts = {this.getFilteredContacts}
       deleteContact = {this.deleteContact} />

@@ -8,7 +8,7 @@ export class ContactForm extends Component {
     number: ""
   }
 
-  render () {
+  render () {    
     
   return (
     <form onSubmit={this.props.handleSubmit}>
