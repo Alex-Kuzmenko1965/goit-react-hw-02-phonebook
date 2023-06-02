@@ -1,6 +1,6 @@
 // import cl from './Section.module.css';
 
-export const Filter = ({ filter, searchQuery, getFilteredContacts}) => {
+export const Filter = ({ filter, searchQuery }) => {
   return (
     <label>
       Find contacts by name   
